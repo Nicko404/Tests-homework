@@ -1,7 +1,10 @@
 package ru.clevertect.testing.testshomework.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,6 +43,9 @@ class UserControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Captor
+    ArgumentCaptor<UserEntity> entityCaptor;
 
     @Test
     void whenGetAll_thenReturnAllUsers() throws Exception {
@@ -167,5 +173,18 @@ class UserControllerTest {
     void whenDelete_thenDeleteUser() throws Exception {
         mockMvc.perform(delete("/api/v1/users/{id}", UUID.randomUUID()))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void usingCaptorTest() {
+        UserEntity user = new UserEntity();
+        user.setName("Name");
+        user.setPassword("Password");
+
+        userService.save(user);
+
+        Mockito.verify(userService).save(entityCaptor.capture());
+        UserEntity entity = entityCaptor.getValue();
+        Assertions.assertThat(entity.getName()).isEqualTo("Name");
     }
 }
