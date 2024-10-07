@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.clevertect.testing.testshomework.entity.UserEntity;
 import ru.clevertect.testing.testshomework.exception.NoSuchUserException;
 import ru.clevertect.testing.testshomework.exception.UserExistsException;
+import ru.clevertect.testing.testshomework.listener.MessageSender;
 import ru.clevertect.testing.testshomework.repository.UserRepository;
 import ru.clevertect.testing.testshomework.utils.TestData;
 
@@ -25,7 +26,7 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
-        userService = new UserService(userRepository);
+        userService = new UserService(userRepository, new MessageSender());
     }
 
     @Test
